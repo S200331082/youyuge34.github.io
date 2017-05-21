@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <title>面试罐头(一)-——-okhttp内部总结分析 | 尤鱼哥</title>
+  <meta name="description" content="A minimal hexo theme." />
+  <meta name="keywords" content="hexo,theme,typescript,otakism,otaku" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="本文意图是针对面试，理清内部流程关系，而非细抠代码，汇总他人的文字而来  1.概述okhttp3总体流程图：先来回顾一下代码的使用流程，然后跟着流程一步步来分析：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面试罐头(一)-——-okhttp内部总结分析">
+<meta property="og:url" content="http://www.youyuge.cn/2017/05/21/mianshi_1/index.html">
+<meta property="og:site_name" content="尤鱼哥">
+<meta property="og:description" content="本文意图是针对面试，理清内部流程关系，而非细抠代码，汇总他人的文字而来  1.概述okhttp3总体流程图：先来回顾一下代码的使用流程，然后跟着流程一步步来分析：">
+<meta property="og:image" content="https://blog.piasy.com/img/201607/okhttp_full_process.png">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/98641-ecaef9a96f164e00.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/98641-b1d546fc300315a7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://raw.githubusercontent.com/wiki/square/okhttp/interceptors@2x.png">
+<meta property="og:image" content="https://blog.piasy.com/img/201607/okhttp_interceptors.png">
+<meta property="og:updated_time" content="2017-05-21T11:42:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="面试罐头(一)-——-okhttp内部总结分析">
+<meta name="twitter:description" content="本文意图是针对面试，理清内部流程关系，而非细抠代码，汇总他人的文字而来  1.概述okhttp3总体流程图：先来回顾一下代码的使用流程，然后跟着流程一步步来分析：">
+<meta name="twitter:image" content="https://blog.piasy.com/img/201607/okhttp_full_process.png">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+
+	<script src="https://use.typekit.net/eyf3hir.js"></script>
+  <script>try{Typekit.load({ async: false });}catch(e){}</script>
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+  
+
+</head>
+
+<body>
+  
+  <div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+
+  <script>setLoadingBarProgress(20)</script>
+  
+  <div id="site-wrapper">
+    
+    <header id="header">
+	<div id="header-wrapper" class="clearfix">
+		<a id="logo" href="/">
+			<img src="/images/logo.png" />
+			<span id="site-desc">
+			  Mr.鱿鱼的记忆罐头
+      </span>
+		</a>
+		<button id="site-nav-switch">
+	    <span class="icon icon-menu"></span>
+	  </button>
+	</div>
+	<aside id="site-menu">
+  	<nav>
+  		
+        <a href="/" class="nav-home nav">
+          Home
+        </a>
+      
+        <a href="/2017/05/10/my_first_post_test/" class="nav-about nav">
+          About
+        </a>
+      
+        <a href="/archives" class="nav-archives nav">
+          Archives
+        </a>
+      
+    </nav>
+	</aside>
+</header>
+    <script>setLoadingBarProgress(40);</script>
+    
+    <main id="main" role="main">
+      <article id="post-mianshi_1"
+  class="post article white-box article-type-post"
+  itemscope itemprop="blogPost">
+	<h2 class="title">
+  	<a href="/2017/05/21/mianshi_1/">
+    	面试罐头(一)-——-okhttp内部总结分析
+    </a>
+  </h2>
+	<time>
+	  May 21, 2017
+	</time>
+	<section class="content">
+  	<div class="article-entry" itemprop="articleBody">
+    	<blockquote>
+<p>本文意图是针对面试，理清内部流程关系，而非细抠代码，汇总他人的文字而来</p>
+</blockquote>
+<h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h1><p>okhttp3总体流程图：<br><img src="https://blog.piasy.com/img/201607/okhttp_full_process.png" alt="liucheng"><br>先来回顾一下代码的使用流程，然后跟着流程一步步来分析：<br><a id="more"></a></p>
+<h2 id="1-1-创建-OkHttpClient-对象"><a href="#1-1-创建-OkHttpClient-对象" class="headerlink" title="1.1 创建 OkHttpClient 对象"></a>1.1 创建 <code>OkHttpClient</code> 对象</h2><pre><code>OkHttpClient client = new OkHttpClient();
+</code></pre><p>其实<code>okHttpClient</code>用的也是<code>builder</code>构建者模式：</p>
+<pre><code>public OkHttpClient() {
+    this(new Builder());
+}
+</code></pre><p>实际上，<code>OkHttpClient.Builder</code> 类成员很多，用来设置连接的各种参数，官方建议使用单例模式构建一个client。 直接new只是使用了默认配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">public Builder() &#123;</div><div class="line">  dispatcher = new Dispatcher();</div><div class="line">  protocols = DEFAULT_PROTOCOLS;</div><div class="line">  connectionSpecs = DEFAULT_CONNECTION_SPECS;</div><div class="line">  proxySelector = ProxySelector.getDefault();</div><div class="line">  cookieJar = CookieJar.NO_COOKIES;</div><div class="line">  socketFactory = SocketFactory.getDefault();</div><div class="line">  hostnameVerifier = OkHostnameVerifier.INSTANCE;</div><div class="line">  certificatePinner = CertificatePinner.DEFAULT;</div><div class="line">  proxyAuthenticator = Authenticator.NONE;</div><div class="line">  authenticator = Authenticator.NONE;</div><div class="line">  connectionPool = new ConnectionPool();</div><div class="line">  dns = Dns.SYSTEM;</div><div class="line">  followSslRedirects = true;</div><div class="line">  followRedirects = true;</div><div class="line">  retryOnConnectionFailure = true;</div><div class="line">  connectTimeout = 10_000;</div><div class="line">  readTimeout = 10_000;</div><div class="line">  writeTimeout = 10_000;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="1-2-创建Request请求对象"><a href="#1-2-创建Request请求对象" class="headerlink" title="1.2 创建Request请求对象"></a>1.2 创建<code>Request</code>请求对象</h2><pre><code>Request request = new Request.Builder()
+  .url(url)
+  .build();
+</code></pre><h2 id="1-3-创建Call对象"><a href="#1-3-创建Call对象" class="headerlink" title="1.3 创建Call对象"></a>1.3 创建<code>Call</code>对象</h2><p>OkHttpClient 实现了<code>Call.Factory</code>，负责根据请求创建新的 Call。</p>
+<blockquote>
+<p>callFactory 负责创建 HTTP 请求，HTTP 请求被抽象为了 okhttp3.Call 类，它表示一个已经准备好，可以随时执行的 HTTP 请求</p>
+</blockquote>
+<pre><code>Call call = client.newCall(request);
+</code></pre><h2 id="1-4-同步阻塞执行请求"><a href="#1-4-同步阻塞执行请求" class="headerlink" title="1.4 同步阻塞执行请求"></a>1.4 同步阻塞执行请求</h2><pre><code>Response response = call.execute();
+</code></pre><h2 id="1-5-异步回调执行请求"><a href="#1-5-异步回调执行请求" class="headerlink" title="1.5 异步回调执行请求"></a>1.5 异步回调执行请求</h2><pre><code>call.enqueue(new Callback() {
+    @Override
+    public void onFailure(Call call, IOException e) {
+}
+
+    @Override
+    public void onResponse(Call call, Response response) throws IOException {
+        System.out.println(response.body().string());
+}
+});
+</code></pre><h1 id="2-精妙的线程池"><a href="#2-精妙的线程池" class="headerlink" title="2. 精妙的线程池"></a>2. 精妙的线程池</h1><h2 id="2-1-同步请求时"><a href="#2-1-同步请求时" class="headerlink" title="2.1 同步请求时"></a>2.1 同步请求时</h2><p>实际上<code>newCall</code>方法会返回一个<code>Realcall</code>对象，而它同步执行execute()方法时：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">@Override public Response execute() throws IOException &#123;</div><div class="line">    synchronized (this) &#123;</div><div class="line">      if (executed) throw new IllegalStateException(&quot;Already Executed&quot;);</div><div class="line">      executed = true;</div><div class="line">    &#125;</div><div class="line">    try &#123;</div><div class="line">    	//仅仅标记作用</div><div class="line">      client.dispatcher().executed(this);</div><div class="line">      //这才是真正的执行下一步发请求，同步异步都会走到这个方法</div><div class="line">      Response result = getResponseWithInterceptorChain(false);</div><div class="line">      if (result == null) throw new IOException(&quot;Canceled&quot;);</div><div class="line">      return result;</div><div class="line">    &#125; finally &#123;</div><div class="line">      client.dispatcher().finished(this);</div><div class="line">    &#125;</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+<p>虽然dispatcher也掺和了，其实没什么用，涉及到 dispatcher 的内容只不过是在内部做了个标记，表明有个有个任务正在执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">/** Used by &#123;@code Call#execute&#125; to signal it is in-flight. */</div><div class="line"> synchronized void executed(RealCall call) &#123;</div><div class="line">   runningSyncCalls.add(call);</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<h2 id="2-2-异步请求"><a href="#2-2-异步请求" class="headerlink" title="2.2 异步请求"></a>2.2 异步请求</h2><h3 id="2-2-1-反向代理模型"><a href="#2-2-1-反向代理模型" class="headerlink" title="2.2.1 反向代理模型"></a>2.2.1 反向代理模型</h3><p>服务器会添加Header并自动转发请求给后端集群，接着返回数据结果给用户。可以提高服务的负载均衡能力，实现非阻塞、高可用、高并发连接，避免资源全部放到一台服务器而带来的负载。<br><img src="http://upload-images.jianshu.io/upload_images/98641-ecaef9a96f164e00.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fxdl"></p>
+<p>而在OkHttp中，非常类似于上述场景，它使用<code>Dispatcher</code>作为任务的派发器，线程池对应多台后置服务器，用<code>AsyncCall</code>对应Socket请求，用<code>Deque&lt;readyAsyncCalls&gt;</code>对应Nginx的内部缓存。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/98641-b1d546fc300315a7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="xcc" title="任务调度"></p>
+<p>具体成员如下</p>
+<ul>
+<li>maxRequests = 64: 最大并发请求数为64</li>
+<li>maxRequestsPerHost = 5: 每个主机最大请求数为5</li>
+<li>Dispatcher: 分发者，也就是生产者（默认在主线程）</li>
+<li>AsyncCall: 队列中需要处理的Runnable（包装了异步回调接口）</li>
+<li>ExecutorService：消费者池（也就是线程池）</li>
+<li><code>Deque&lt;readyAsyncCalls&gt;</code>：缓存（用数组实现，可自动扩容，无大小限制）</li>
+<li><code>Deque&lt;runningAsyncCalls&gt;</code>：正在运行的任务，仅仅是用来引用正在运行的任务以判断并发量，注意它并不是消费者缓存</li>
+</ul>
+<p>通过将请求任务分发给多个线程，可以显著的减少I/O等待时间。 </p>
+<h3 id="2-2-2-异步执行过程"><a href="#2-2-2-异步执行过程" class="headerlink" title="2.2.2 异步执行过程"></a>2.2.2 异步执行过程</h3><p>具体过程如下：  </p>
+<ol>
+<li><code>enqueue()</code>方法调用后，判断<code>runningAsyncCalls</code>队列是否还有空位子。</li>
+<li>若有空位，那就调用<code>executorService().execute(call);</code>交给线程池执行请求，并且添加进运行队列</li>
+<li>啊，没空位了，只能进<code>readyAsyncCalls</code>等待队列了……</li>
+</ol>
+<p>看一下call任务内部的执行方法：</p>
+<pre><code>…………
+//果然和同步方式一样，最后通过这个方法去发送给下一步。
+Response response = getResponseWithInterceptorChain(forWebSocket);
+
+…………
+finally {
+  //最关键的代码
+client.dispatcher().finished(this);
+}    
+</code></pre><p>当任务执行完成后，无论是否有异常，finally代码段总会被执行，也就是会调用<code>Dispatcher</code>的finished函数，打开源码，发现它将正在运行的任务Call从队列<code>runningAsyncCalls</code>中移除后，接着执行<code>promoteCalls()</code>函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">if (runningCallsForHost(call) &lt; maxRequestsPerHost) &#123;</div><div class="line">        //将缓存等待区最后一个移动到运行区中，并执行</div><div class="line">      i.remove();</div><div class="line">      runningAsyncCalls.add(call);</div><div class="line">      executorService().execute(call);</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>实际上就是会在任务执行完的最后，把自己从运行队列移除，唤醒一个等待队列的任务，让他去执行。<br>这样，就主动的把缓存队列向前走了一步，而没有使用互斥锁等复杂编码。</p>
+<h3 id="2-2-3-异步总结"><a href="#2-2-3-异步总结" class="headerlink" title="2.2.3 异步总结"></a>2.2.3 异步总结</h3><ul>
+<li>OkHttp采用Dispatcher技术，反向代理，优化了单生产者多消费者模式，与线程池配合实现了高并发，低阻塞的运行</li>
+<li>Okhttp采用Deque作为缓存，按照入队的顺序先进先出</li>
+<li>OkHttp最出彩的地方就是在try/finally中调用了finished函数，可以在任务结束时候唤醒等待的任务，主动控制等待队列的移动，而不是采用锁或者wait/notify，极大减少了编码复杂性</li>
+</ul>
+<h1 id="3-工作的核心—-拦截器"><a href="#3-工作的核心—-拦截器" class="headerlink" title="3. 工作的核心—-拦截器"></a>3. 工作的核心—-拦截器</h1><h2 id="3-1-拦截器的介绍与种类"><a href="#3-1-拦截器的介绍与种类" class="headerlink" title="3.1 拦截器的介绍与种类"></a>3.1 拦截器的介绍与种类</h2><p>不管同步异步发送任务请求，最后都会执行<code>getResponseWithInterceptorChain</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">private Response getResponseWithInterceptorChain() throws IOException &#123;</div><div class="line">  // Build a full stack of interceptors.</div><div class="line">  List&lt;Interceptor&gt; interceptors = new ArrayList&lt;&gt;();</div><div class="line">  interceptors.addAll(client.interceptors());</div><div class="line">  interceptors.add(retryAndFollowUpInterceptor);</div><div class="line">  interceptors.add(new BridgeInterceptor(client.cookieJar()));</div><div class="line">  interceptors.add(new CacheInterceptor(client.internalCache()));</div><div class="line">  interceptors.add(new ConnectInterceptor(client));</div><div class="line">  if (!retryAndFollowUpInterceptor.isForWebSocket()) &#123;</div><div class="line">    interceptors.addAll(client.networkInterceptors());</div><div class="line">  &#125;</div><div class="line">  interceptors.add(new CallServerInterceptor(</div><div class="line">      retryAndFollowUpInterceptor.isForWebSocket()));</div><div class="line"></div><div class="line">  Interceptor.Chain chain = new RealInterceptorChain(</div><div class="line">      interceptors, null, null, null, 0, originalRequest);</div><div class="line">  return chain.proceed(originalRequest);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>拦截器是个啥？官方介绍和图片：</p>
+<blockquote>
+<p>the whole thing is just a stack of built-in interceptors.<br><img src="https://raw.githubusercontent.com/wiki/square/okhttp/interceptors@2x.png" alt="ljq2"></p>
+</blockquote>
+<p>可见 Interceptor 是 OkHttp 最核心的一个东西，不要误以为它只负责拦截请求进行一些额外的处理（例如 cookie），实际上它把实际的网络请求、缓存、透明压缩等功能都统一了起来，每一个功能都只是一个 Interceptor，它们再连接成一个 <code>Interceptor.Chain</code>，环环相扣，最终圆满完成一次网络请求。</p>
+<p>从 <code>getResponseWithInterceptorChain</code> 函数我们可以看到，<code>Interceptor.Chain</code> 的分布依次是：<br><img src="https://blog.piasy.com/img/201607/okhttp_interceptors.png" alt="ljq"></p>
+<ol>
+<li>在配置 <code>OkHttpClient</code> 时设置的 <code>interceptors</code>；  </li>
+<li>负责失败重试以及重定向的 <code>RetryAndFollowUpInterceptor</code>；  </li>
+<li>负责把用户构造的请求转换为发送到服务器的请求、把服务器返回的响应转换为用户友好的响应的 <code>BridgeInterceptor</code>；  </li>
+<li>负责读取缓存直接返回、更新缓存的 <code>CacheInterceptor</code>；  </li>
+<li>负责和服务器建立连接的 <code>ConnectInterceptor</code>；  </li>
+<li>配置 OkHttpClient 时设置的 <code>networkInterceptors</code>；  </li>
+<li>负责向服务器发送请求数据、从服务器读取响应数据的<code>CallServerInterceptor</code>。</li>
+</ol>
+<h2 id="3-2-拦截器的责任链模式"><a href="#3-2-拦截器的责任链模式" class="headerlink" title="3.2 拦截器的责任链模式"></a>3.2 拦截器的责任链模式</h2><p><strong>实际上，是责任链模式的最佳应用（如同事件分发机制）</strong>，每个拦截器可以自己拦截处理，或者交给下一个拦截器，让每个 <code>Interceptor</code> 自行决定能否完成任务以及怎么完成任务。</p>
+<p>其实 <code>Interceptor</code> 的设计也是一种分层的思想，每个 <code>Interceptor</code> 就是一层。为什么要套这么多层呢？分层的思想在 <code>TCP/IP</code> 协议中就体现得淋漓尽致，分层简化了每一层的逻辑，每层只需要关注自己的责任（单一原则思想也在此体现），而各层之间通过约定的接口/协议进行合作（面向接口编程思想），共同完成复杂的任务。</p>
+<h1 id="4-总结"><a href="#4-总结" class="headerlink" title="4 总结"></a>4 总结</h1><ol>
+<li><code>OkHttpClient</code> 实现 <code>Call.Factory</code>，负责为 Request 创建 Call；</li>
+<li><code>RealCall</code> 为具体的 Call 实现，其 <code>enqueue()</code> 异步接口通过 <code>Dispatcher</code> 利用 <code>ExecutorService</code> 实现，而最终进行网络请求时和同步 <code>execute()</code> 接口一致，都是通过 <code>getResponseWithInterceptorChain()</code> 函数实现；</li>
+<li><code>getResponseWithInterceptorChain()</code> 中利用 <code>Interceptor</code> 链条，分层实现缓存、透明压缩、网络 IO 等功能； </li>
+</ol>
+<blockquote>
+<p>引用 </p>
+<p><a href="http://www.jianshu.com/p/aad5aacd79bf" target="_blank" rel="external">OkHttp3源码分析</a><br><a href="https://blog.piasy.com/2016/07/11/Understand-OkHttp/#section" target="_blank" rel="external">拆轮子系列：拆 OkHttp</a></p>
+</blockquote>
+
+  	</div>
+
+	  <div class="article-tags tags">
+		  
+	  </div>
+	</section>
+</article>
+
+
+
+
+      <script>setLoadingBarProgress(60);</script>
+    </main>
+    
+    <footer id="footer" class="clearfix">
+  
+  
+	<div class="search">
+	  <form name="searchform" id="searchform" class="u-search-form">
+	    <input type="text" id="searchinput" class="u-search-input" placeholder="Looking for something?" />
+	    <button type="submit" id="u-search-btn-submit" class="u-search-btn-submit">
+	      <span class="icon icon-search"></span>
+	    </button>
+	  </form>
+	</div>
+	
+
+	<div class="social-wrapper">
+  	
+      
+        <a href="https://github.com/youyuge34" class="social github"
+          target="_blank" rel="external">
+          <span class="icon icon-github"></span>
+        </a>
+      
+        <a href="http://weibo.com/1806842090/" class="social sina-weibo"
+          target="_blank" rel="external">
+          <span class="icon icon-sina-weibo"></span>
+        </a>
+      
+    
+  </div>
+  
+  <div>Theme <span class="codename">Typescript</span> designed by <a href="http://rakugaki.me/" target="_blank">Art Chen</a>.</div>
+  <div>&copy; <a href="/">尤鱼哥</a></div>
+  
+</footer>
+
+
+    <script>setLoadingBarProgress(80);</script>
+    
+  </div>
+
+  
+
+
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script>window.jQuery || document.write('<script src="/js/jquery.min.js"><\/script>')</script>
+
+<script src="/js/jquery.fitvids.js"></script>
+<script>
+	var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+	var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+	var ALGOLIA_API_KEY = "";
+	var ALGOLIA_APP_ID = "";
+	var ALGOLIA_INDEX_NAME = "";
+  var AZURE_SERVICE_NAME = "";
+  var AZURE_INDEX_NAME = "";
+  var AZURE_QUERY_KEY = "";
+  var BAIDU_API_ID = "";
+  var SEARCH_SERVICE = "hexo";
+</script>
+<script src="/js/search.js"></script>
+<script src="/js/app.js"></script>
+
+
+  <script>setLoadingBarProgress(100);</script>
+  
+</body>
+</html>

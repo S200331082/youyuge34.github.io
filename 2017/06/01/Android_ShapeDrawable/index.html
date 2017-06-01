@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <title>Android之ShapeDrawable详解 | 尤鱼哥</title>
+  <meta name="description" content="A minimal hexo theme." />
+  <meta name="keywords" content="hexo,theme,typescript,otakism,otaku" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Drawable种类繁多，ShapeDrawable 是一种很常见的Drawable,可以理解为通过颜色来构造的图形，它既可以是纯色的图形，也可以是具有渐变效果的图形。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android之ShapeDrawable详解">
+<meta property="og:url" content="http://www.youyuge.cn/2017/06/01/Android_ShapeDrawable/index.html">
+<meta property="og:site_name" content="尤鱼哥">
+<meta property="og:description" content="Drawable种类繁多，ShapeDrawable 是一种很常见的Drawable,可以理解为通过颜色来构造的图形，它既可以是纯色的图形，也可以是具有渐变效果的图形。">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3251332-073a633501a23d44.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3251332-68ef1a1f71443c8c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3251332-cc3ffc4a2d581e09.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-06-01T03:57:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android之ShapeDrawable详解">
+<meta name="twitter:description" content="Drawable种类繁多，ShapeDrawable 是一种很常见的Drawable,可以理解为通过颜色来构造的图形，它既可以是纯色的图形，也可以是具有渐变效果的图形。">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3251332-073a633501a23d44.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+
+	<script src="https://use.typekit.net/eyf3hir.js"></script>
+  <script>try{Typekit.load({ async: false });}catch(e){}</script>
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+  
+
+</head>
+
+<body>
+  
+  <div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+
+  <script>setLoadingBarProgress(20)</script>
+  
+  <div id="site-wrapper">
+    
+    <header id="header">
+	<div id="header-wrapper" class="clearfix">
+		<a id="logo" href="/">
+			<img src="/images/logo.png" />
+			<span id="site-desc">
+			  Mr.鱿鱼的记忆罐头
+      </span>
+		</a>
+		<button id="site-nav-switch">
+	    <span class="icon icon-menu"></span>
+	  </button>
+	</div>
+	<aside id="site-menu">
+  	<nav>
+  		
+        <a href="/" class="nav-home nav">
+          Home
+        </a>
+      
+        <a href="/2017/05/10/my_first_post_test/" class="nav-about nav">
+          About
+        </a>
+      
+        <a href="/archives" class="nav-archives nav">
+          Archives
+        </a>
+      
+    </nav>
+	</aside>
+</header>
+    <script>setLoadingBarProgress(40);</script>
+    
+    <main id="main" role="main">
+      <article id="post-Android_ShapeDrawable"
+  class="post article white-box article-type-post"
+  itemscope itemprop="blogPost">
+	<h2 class="title">
+  	<a href="/2017/06/01/Android_ShapeDrawable/">
+    	Android之ShapeDrawable详解
+    </a>
+  </h2>
+	<time>
+	  Jun 1, 2017
+	</time>
+	<section class="content">
+  	<div class="article-entry" itemprop="articleBody">
+    	<p><img src="http://upload-images.jianshu.io/upload_images/3251332-073a633501a23d44.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>Drawable种类繁多，<code>ShapeDrawable</code> 是一种很常见的Drawable,可以理解为<strong>通过颜色来构造的图形，它既可以是纯色的图形，也可以是具有渐变效果的图形。</strong>  </p>
+<a id="more"></a>
+<h2 id="一、ShapeDrawable语法"><a href="#一、ShapeDrawable语法" class="headerlink" title="一、ShapeDrawable语法"></a>一、ShapeDrawable语法</h2><p><code>ShapeDrawable</code>语法稍显复杂，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;shape</div><div class="line">    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    android:shape=[&quot;rectangle&quot; | &quot;oval&quot; | &quot;line&quot; | &quot;ring&quot;] &gt;</div><div class="line">    &lt;corners</div><div class="line">        android:radius=&quot;integer&quot;</div><div class="line">        android:topLeftRadius=&quot;integer&quot;</div><div class="line">        android:topRightRadius=&quot;integer&quot;</div><div class="line">        android:bottomLeftRadius=&quot;integer&quot;</div><div class="line">        android:bottomRightRadius=&quot;integer&quot; /&gt;</div><div class="line">    &lt;gradient</div><div class="line">        android:angle=&quot;integer&quot;</div><div class="line">        android:centerX=&quot;integer&quot;</div><div class="line">        android:centerY=&quot;integer&quot;</div><div class="line">        android:centerColor=&quot;integer&quot;</div><div class="line">        android:endColor=&quot;color&quot;</div><div class="line">        android:gradientRadius=&quot;integer&quot;</div><div class="line">        android:startColor=&quot;color&quot;</div><div class="line">        android:type=[&quot;linear&quot; | &quot;radial&quot; | &quot;sweep&quot;]</div><div class="line">        android:useLevel=[&quot;true&quot; | &quot;false&quot;] /&gt;</div><div class="line">    &lt;padding</div><div class="line">        android:left=&quot;integer&quot;</div><div class="line">        android:top=&quot;integer&quot;</div><div class="line">        android:right=&quot;integer&quot;</div><div class="line">        android:bottom=&quot;integer&quot; /&gt;</div><div class="line">    &lt;size</div><div class="line">        android:width=&quot;integer&quot;</div><div class="line">        android:height=&quot;integer&quot; /&gt;</div><div class="line">    &lt;solid</div><div class="line">        android:color=&quot;color&quot; /&gt;</div><div class="line">    &lt;stroke</div><div class="line">        android:width=&quot;integer&quot;</div><div class="line">        android:color=&quot;color&quot;</div><div class="line">        android:dashWidth=&quot;integer&quot;</div><div class="line">        android:dashGap=&quot;integer&quot; /&gt;</div><div class="line">&lt;/shape&gt;</div></pre></td></tr></table></figure>
+<p>需要注意的是<code>&lt;shape&gt;</code>标签创建的Drawable，其实体类实际上是<code>GradientDrawable</code>，下面分别介绍各个属性的含义。</p>
+<h2 id="二、各属性含义"><a href="#二、各属性含义" class="headerlink" title="二、各属性含义"></a>二、各属性含义</h2><ul>
+<li><h3 id="android-shape"><a href="#android-shape" class="headerlink" title="android:shape"></a>android:shape</h3>根元素shape表示图形的形状，有四个选项：<ul>
+<li>rectangle 矩形</li>
+<li>oval 椭圆</li>
+<li>line 横线</li>
+<li>ring 圆环</li>
+</ul>
+</li>
+</ul>
+<p>另外四个当中，line 和 ring 一定需要通过<code>&lt;stroke&gt;</code>标签来指定线的宽和和颜色信息等。</p>
+<ul>
+<li><h3 id="lt-corners-gt"><a href="#lt-corners-gt" class="headerlink" title="&lt;corners&gt;"></a>&lt;corners&gt;</h3>表示shape图形四个交的角度，即四个角的圆角程度。单位是px，<strong>只适用于矩形shape</strong>。</li>
+</ul>
+<p><code>android:radius</code>优先级较低，会被其他四个属性覆盖。属性含义望文生义即可。注意：每个圆角半径值都必须大于1，否侧就没有圆角。</p>
+<ul>
+<li><h3 id="lt-solid-gt"><a href="#lt-solid-gt" class="headerlink" title="&lt;solid&gt;"></a>&lt;solid&gt;</h3><p>表示纯色填充，利用 android:color 就可以指定shape的颜色。</p>
+</li>
+<li><h3 id="lt-gradient-gt"><a href="#lt-gradient-gt" class="headerlink" title="&lt;gradient&gt;"></a>&lt;gradient&gt;</h3><p>渐变效果，和&lt;solid&gt;标签互斥。</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>gradient标签属性</th>
+<th>作用 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>android:angle</td>
+<td>渐变的角度，默认是0，其值必须是45的整数倍。0表示从左边到右，90表示从上到下。具体效果随着角度的调整而产生变化，角度影响渐变方向。</td>
+</tr>
+<tr>
+<td>android:centerX</td>
+<td>渐变中心的横坐标点</td>
+</tr>
+<tr>
+<td>android:centerY</td>
+<td>渐变中心的纵坐标点</td>
+</tr>
+<tr>
+<td>android:startColor</td>
+<td>渐变色的起始色</td>
+</tr>
+<tr>
+<td>android:centerColor</td>
+<td>渐变色的中间色</td>
+</tr>
+<tr>
+<td>android:endColor</td>
+<td>渐变色的结束色</td>
+</tr>
+<tr>
+<td>android:type</td>
+<td>渐变的类型，分3种，linear（线性渐变），radio（径向渐变），sweep（扫描线渐变），默认值是 线性渐变 。</td>
+</tr>
+<tr>
+<td>android:gradientRadius</td>
+<td>渐变的半径（仅当 android:type 为radio时有效）</td>
+</tr>
+<tr>
+<td>android:useLevel</td>
+<td>一般为false，当Drawable作为StateListDrawable时有效。</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><h3 id="lt-stroke-gt"><a href="#lt-stroke-gt" class="headerlink" title="&lt;stroke&gt;"></a>&lt;stroke&gt;</h3>Shape的描边，有如下几个属性：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>stroke标签属性</th>
+<th>作用 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>android:width</td>
+<td>描边的宽度，越大则shape的边缘线越粗</td>
+</tr>
+<tr>
+<td>android:color</td>
+<td>描边的颜色</td>
+</tr>
+<tr>
+<td>android:dashWidth</td>
+<td>虚线的宽度</td>
+</tr>
+<tr>
+<td>android:dashGap</td>
+<td>虚线的空隙的间隔</td>
+</tr>
+</tbody>
+</table>
+<p>注：如果 android:dashWidth 和 android:dashGap 两者有任意一个为0，那么虚线效果就无法显示。</p>
+<ul>
+<li><h3 id="lt-padding-gt"><a href="#lt-padding-gt" class="headerlink" title="&lt;padding&gt;"></a>&lt;padding&gt;</h3><p>不是shape的空白，而是包含它的View的空白</p>
+</li>
+<li><h3 id="lt-size-gt"><a href="#lt-size-gt" class="headerlink" title="&lt;size&gt;"></a>&lt;size&gt;</h3><p>shape没有宽/高的概念，总结来说，标签设置的宽高就是ShapeDrawable的固有宽高（这时调用getIntrinsicWidth获得的就不是-1了），但是作为View的背景时，它还是会拉伸或缩小自适应View的大小。</p>
+</li>
+</ul>
+<h2 id="三、示例代码"><a href="#三、示例代码" class="headerlink" title="三、示例代码"></a>三、示例代码</h2><h3 id="3-1-搜索框渐变背景："><a href="#3-1-搜索框渐变背景：" class="headerlink" title="3.1 搜索框渐变背景："></a>3.1 搜索框渐变背景：</h3><p>xml代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    android:shape=&quot;rectangle&quot;&gt;</div><div class="line"></div><div class="line">   &lt;gradient</div><div class="line">        android:angle=&quot;90&quot;</div><div class="line">        android:startColor=&quot;@color/color_fed952&quot;</div><div class="line">        android:endColor=&quot;#ff9b00&quot;</div><div class="line">        /&gt;</div><div class="line"></div><div class="line">&lt;/shape&gt;</div></pre></td></tr></table></figure>
+<p>实际效果：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3251332-68ef1a1f71443c8c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="渐变实际效果.png"></p>
+<h3 id="3-2-搜索框文字背景："><a href="#3-2-搜索框文字背景：" class="headerlink" title="3.2 搜索框文字背景："></a>3.2 搜索框文字背景：</h3><p>xml代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;shape xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">       android:shape=&quot;rectangle&quot;</div><div class="line">&gt;</div><div class="line">    &lt;corners android:radius=&quot;6dp&quot;/&gt;</div><div class="line">    &lt;solid android:color=&quot;@color/white&quot;/&gt;</div><div class="line">&lt;/shape&gt;</div></pre></td></tr></table></figure>
+<p>其实就是个editText的背景是白色的圆角矩形，配合上渐变背景，最后搜索框整体效果图：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3251332-cc3ffc4a2d581e09.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="整体效果图.png"></p>
+<h3 id="3-3-搜索框布局文件代码"><a href="#3-3-搜索框布局文件代码" class="headerlink" title="3.3 搜索框布局文件代码"></a>3.3 搜索框布局文件代码</h3><p>xml代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line">&lt;RelativeLayout</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;wrap_content&quot;</div><div class="line">        android:background=&quot;@drawable/bg_home_search&quot;</div><div class="line">        android:padding=&quot;8dp&quot;</div><div class="line">    &gt;</div><div class="line">    &lt;TextView</div><div class="line">            android:id=&quot;@+id/qrcode_view&quot;</div><div class="line">            android:layout_width=&quot;wrap_content&quot;</div><div class="line">            android:layout_height=&quot;wrap_content&quot;</div><div class="line">            android:layout_centerVertical=&quot;true&quot;</div><div class="line">            android:background=&quot;@drawable/bar_code_scan_icon&quot;</div><div class="line">        /&gt;</div><div class="line"></div><div class="line">   &lt;TextView</div><div class="line">            android:id=&quot;@+id/category_view&quot;</div><div class="line">            android:layout_width=&quot;wrap_content&quot;</div><div class="line">            android:layout_height=&quot;wrap_content&quot;</div><div class="line">            android:layout_alignParentRight=&quot;true&quot;</div><div class="line">            android:layout_centerVertical=&quot;true&quot;</div><div class="line">            android:background=&quot;@drawable/category&quot;</div><div class="line">       /&gt;</div><div class="line">        &lt;TextView</div><div class="line">            android:id=&quot;@+id/search_view&quot;</div><div class="line">            android:layout_width=&quot;match_parent&quot;</div><div class="line">            android:layout_height=&quot;wrap_content&quot;</div><div class="line">            android:layout_marginLeft=&quot;10dp&quot;</div><div class="line">            android:layout_marginRight=&quot;10dp&quot;</div><div class="line">            android:layout_toLeftOf=&quot;@id/category_view&quot;</div><div class="line">            android:layout_toRightOf=&quot;@id/qrcode_view&quot;</div><div class="line">            android:background=&quot;@drawable/bg_home_edittext&quot;</div><div class="line">            android:gravity=&quot;center&quot;</div><div class="line">            android:padding=&quot;6dp&quot;</div><div class="line">            android:text=&quot;@string/home_edittext_hint&quot;</div><div class="line">            android:textColor=&quot;@color/color_cdcdcd&quot;</div><div class="line">            android:textSize=&quot;16sp&quot;</div><div class="line">        /&gt;</div><div class="line">    &lt;/RelativeLayout&gt;</div></pre></td></tr></table></figure>
+  	</div>
+
+	  <div class="article-tags tags">
+		  
+	  </div>
+	</section>
+</article>
+
+
+
+
+      <script>setLoadingBarProgress(60);</script>
+    </main>
+    
+    <footer id="footer" class="clearfix">
+  
+  
+	<div class="search">
+	  <form name="searchform" id="searchform" class="u-search-form">
+	    <input type="text" id="searchinput" class="u-search-input" placeholder="Looking for something?" />
+	    <button type="submit" id="u-search-btn-submit" class="u-search-btn-submit">
+	      <span class="icon icon-search"></span>
+	    </button>
+	  </form>
+	</div>
+	
+
+	<div class="social-wrapper">
+  	
+      
+        <a href="https://github.com/youyuge34" class="social github"
+          target="_blank" rel="external">
+          <span class="icon icon-github"></span>
+        </a>
+      
+        <a href="http://weibo.com/1806842090/" class="social sina-weibo"
+          target="_blank" rel="external">
+          <span class="icon icon-sina-weibo"></span>
+        </a>
+      
+    
+  </div>
+  
+  <div>Theme <span class="codename">Typescript</span> designed by <a href="http://rakugaki.me/" target="_blank">Art Chen</a>.</div>
+  <div>&copy; <a href="/">尤鱼哥</a></div>
+  
+</footer>
+
+
+    <script>setLoadingBarProgress(80);</script>
+    
+  </div>
+
+  
+
+
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script>window.jQuery || document.write('<script src="/js/jquery.min.js"><\/script>')</script>
+
+<script src="/js/jquery.fitvids.js"></script>
+<script>
+	var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+	var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+	var ALGOLIA_API_KEY = "";
+	var ALGOLIA_APP_ID = "";
+	var ALGOLIA_INDEX_NAME = "";
+  var AZURE_SERVICE_NAME = "";
+  var AZURE_INDEX_NAME = "";
+  var AZURE_QUERY_KEY = "";
+  var BAIDU_API_ID = "";
+  var SEARCH_SERVICE = "hexo";
+</script>
+<script src="/js/search.js"></script>
+<script src="/js/app.js"></script>
+
+
+  <script>setLoadingBarProgress(100);</script>
+  
+</body>
+</html>

@@ -93,8 +93,179 @@
 
   
   <h2 class="title">
+    <a href="/2017/06/02/storage-explaination/">
+      Android开罐头———外部存储与内部存储完全解析
+    </a>
+  </h2>
+  
+  <time>
+    Jun 2, 2017
+  </time>
+  <section class="content">
+	  <blockquote>
+<p>context.getExternalFilesDir(),Environment.getExternalStorageDirectory()，傻傻分不清？到底什么算安卓手机的external storage？</p>
+</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/3251332-ee02f7debaf417c6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<h2 id="一、存储概述"><a href="#一、存储概述" class="headerlink" title="一、存储概述"></a>一、存储概述</h2><p>Android提供了几种保存application持久化数据的选择。而开发者根据</p>
+<ul>
+<li>数据是否为app私有</li>
+<li>数据是否可以暴露给其他app</li>
+<li>数据大小情况</li>
+</ul>
+<p>来选择不同的方式存储数据。</p>
+<h3 id="1-1-存储方式"><a href="#1-1-存储方式" class="headerlink" title="1.1 存储方式"></a>1.1 存储方式</h3><p>安卓提供了如下存储的方式选择：</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Shared Preferences</td>
+<td>以键值对形式在xml中存储配置  </td>
+</tr>
+<tr>
+<td>Internal Storage （内部存储）</td>
+<td>设备中的私有数据   </td>
+</tr>
+<tr>
+<td>External Storage （外部存储）</td>
+<td>共享的外部存储中存公有数据</td>
+</tr>
+<tr>
+<td>SQLite Databases</td>
+<td>私有数据库存储格式化的数据</td>
+</tr>
+<tr>
+<td>Network Connection</td>
+<td>在开发者个人网络服务器端存储数据</td>
+</tr>
+</tbody>
+</table>
+<h3 id="1-2-content-provider"><a href="#1-2-content-provider" class="headerlink" title="1.2 content provider"></a>1.2 content provider</h3><p>安卓提供了一种甚至将app的私有数据提供给其他app的途径————content provider。而android官方guide中不把它归为Strage Options中的一种。</p>
+<h2 id="二、Internal-Storage-内部存储"><a href="#二、Internal-Storage-内部存储" class="headerlink" title="二、Internal Storage 内部存储"></a>二、Internal Storage 内部存储</h2><h3 id="2-1-内部存储定义"><a href="#2-1-内部存储定义" class="headerlink" title="2.1 内部存储定义"></a>2.1 内部存储定义</h3><blockquote>
+<p>You can save files directly on the device’s internal storage. By default, files saved to the internal storage are private to your application and other applications cannot access them (nor can the user). When the user uninstalls your application, these files are removed.</p>
+</blockquote>
+<p>白话文版本：<br>注意内部存储不是内存。内部存储位于系统中很特殊的一个位置（类似<strong>沙盒</strong>），如果你想将文件存储于内部存储中，那么文件默认只能被你的应用访问到，且一个应用所创建的所有文件都在和应用包名相同的目录下。<br>也就是说应用创建于内部存储的文件，与这个应用是关联起来的。当一个应用卸载之后，内部存储中的这些文件也被删除。 内部存储空间十分有限，因而显得可贵，另外，它也是系统本身和系统应用程序主要的数据存储所在地，一旦内部存储空间耗尽，手机也就无法使用了。所以对于内部存储空间，我们要尽量避免使用。Shared Preferences和SQLite数据库都是存储在内部存储空间上的。<strong>内部存储一般用<code>Context</code>来获取和操作。</strong></p>
+<h3 id="2-2-创建并写入内部存储"><a href="#2-2-创建并写入内部存储" class="headerlink" title="2.2 创建并写入内部存储"></a>2.2 创建并写入内部存储</h3><blockquote>
+<ol>
+<li>Call <code>openFileOutput()</code> with the name of the file and the operating mode. This returns a FileOutputStream.</li>
+<li>Write to the file with <code>write()</code>.</li>
+<li>Close the stream with <code>close()</code>.</li>
+</ol>
+</blockquote>
+<p>安卓还为我们提供了一个简便方法<code>Context</code>类的 <code>openFileOutput()</code>来读写应用在内部存储空间上的文件，下面是一个向文件中写入文本的例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">String FILENAME = &quot;hello_file&quot;;</div><div class="line">String string = &quot;hello world!&quot;;</div><div class="line">FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);</div><div class="line">fos.write(string.getBytes());</div><div class="line">fos.close();</div></pre></td></tr></table></figure>
+<p>读取同理，把<code>write()</code>换成<code>read()</code>罢了。 </p>
+<p><strong><code>openFileOutput()</code>或者<code>Context.getFileDir()</code>通过Android Device Monitor工具可以找到此目录，为<code>/data/data/com.xxx.xxx/files/</code>。 </strong></p>
+<hr>
+<p><strong><em>拓展优化：</em></strong><br>使用java流，借助<code>FileOutputStream</code>构建出一个<code>OutputStreamWriter</code>对象，接着<code>再用BufferedWriter</code>对象封装：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);</div><div class="line">BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(fos));</div><div class="line">writer.write(string);</div></pre></td></tr></table></figure>
+<h3 id="2-3-内部存储其他操作"><a href="#2-3-内部存储其他操作" class="headerlink" title="2.3 内部存储其他操作"></a>2.3 内部存储其他操作</h3><ul>
+<li>列出所有的已创建的文件,这个可能不容易想到，Context居然有这样的方法。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">String[] files = Context.fileList();</div><div class="line">for(String file : files) ｛</div><div class="line">Log.e(TAG, &quot;file is &quot;+ file);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>删除文件，能创建就要能够删除，当然也会提供了删除文件的接口，它也非常简单，只需要提供文件名</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">if(Context.deleteFile(filename)) &#123;</div><div class="line">Log.e(TAG, &quot;delete file &quot;+ filename + &quot; sucessfully“);</div><div class="line">&#125; else &#123;</div><div class="line">Log.e(TAG, &quot;failed to deletefile &quot; + filename);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>创建一个目录，需要传入目录名称，它返回一个文件对象用到操作路径</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">File workDir = Context.getDir(dirName, Context.MODE_PRIVATE);</div><div class="line">Log.e(TAG, &quot;workdir &quot;+ workDir.getAbsolutePath();</div></pre></td></tr></table></figure>
+<h3 id="2-4-内部存储缓存cache"><a href="#2-4-内部存储缓存cache" class="headerlink" title="2.4 内部存储缓存cache"></a>2.4 内部存储缓存cache</h3><p>你应该使用<code>getCacheDir()</code>来内部绝对缓存目录<code>File</code>，这些缓存将会是在存储不够时第一个被清除的，但是不会保证这些文件一定会被清除。通过Android Device Monitor工具可以找到此目录，为<code>/data/data/com.xxx.xxx/cache/</code>。 </p>
+<blockquote>
+<p>Note:你不应该指望着系统来给你清理这些cache文件，你应该自己设定一个合理的最大上限，比如1MB。当用户卸载app时，这些文件同时被卸载。</p>
+</blockquote>
+<h3 id="2-5-内部存储总结"><a href="#2-5-内部存储总结" class="headerlink" title="2.5 内部存储总结"></a>2.5 内部存储总结</h3><ol>
+<li>文件操作只需要向函数提供文件名，所以程序自己只需要维护文件名即可；</li>
+<li>不用自己去创建文件对象和输入、输出流，提供文件名就可以返回File对象或输入输出流</li>
+<li>对于路径操作返回的都是文件对象。</li>
+<li>由<code>Context</code>类调用</li>
+</ol>
+<h2 id="三、External-Storage-外部存储"><a href="#三、External-Storage-外部存储" class="headerlink" title="三、External Storage 外部存储"></a>三、External Storage 外部存储</h2><h3 id="3-1-外部存储定义"><a href="#3-1-外部存储定义" class="headerlink" title="3.1 外部存储定义"></a>3.1 外部存储定义</h3><blockquote>
+<p>Every Android-compatible device supports a shared “external storage” that you can use to save files. This can be a removable storage media (such as an SD card) or an internal (non-removable) storage. Files saved to the external storage are world-readable and can be modified by the user when they enable USB mass storage to transfer files on a computer.</p>
+</blockquote>
+<p>另外，关于外部存储，我觉得api中在介绍Environment.getExternalStorageDirectory()方法的时候说得很清楚：</p>
+<blockquote>
+<p>Note: don’t be confused by the word “external” here. This directory can better be thought as media/shared storage. It is a filesystem that can hold a relatively large amount of data and that is shared across all applications (does not enforce permissions). Traditionally this is an SD card, but it may also be implemented as built-in storage in a device that is distinct from the protected internal storage and can be mounted as a filesystem on a computer.</p>
+</blockquote>
+<p>白话文版本：<br>最容易混淆的是外部存储，如果说pc上也要区分出外部存储和内部存储的话，那么自带的硬盘算是内部存储，U盘或者移动硬盘算是外部存储，因此我们很容易带着这样的理解去看待安卓手机，认为机身固有存储是内部存储，而扩展的TF卡是外部存储。比如我们任务16GB版本的Nexus 4有16G的内部存储，普通消费者可以这样理解，但是安卓的编程中不能，这16GB仍然是外部存储。<br>所有的安卓设备都有外部存储和内部存储，这两个名称来源于安卓的早期设备，那个时候的设备内部存储确实是固定的，而外部存储确实是可以像U盘一样移动的。但是在后来的设备中，很多中高端机器都将自己的机身存储扩展到了8G以上，他们将存储在概念上分成了”内部internal” 和”外部external” 两部分，但其实都在手机内部。所以<strong>不管安卓手机是否有可移动的sdcard，他们总是有外部存储</strong>和内部存储。最关键的是，<strong>我们都是通过相同的api来访问可移动的sdcard或者手机自带的存储（外部存储）</strong>。</p>
+<h3 id="3-2-获取权限"><a href="#3-2-获取权限" class="headerlink" title="3.2 获取权限"></a>3.2 获取权限</h3><p>manifest中必须添加：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;manifest ...&gt;</div><div class="line">    &lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot; /&gt;</div><div class="line">    ...</div><div class="line">&lt;/manifest&gt;</div></pre></td></tr></table></figure>
+<p>Android 6.0之后新加入了运行时权限，这里不作详解，可参考官方文档：</p>
+<blockquote>
+<p>官方文档：<a href="https://developer.android.com/about/versions/marshmallow/android-6.0.html" target="_blank" rel="external">https://developer.android.com/about/versions/marshmallow/android-6.0.html</a> </p>
+</blockquote>
+<h3 id="3-3-检查状态"><a href="#3-3-检查状态" class="headerlink" title="3.3 检查状态"></a>3.3 检查状态</h3><p>在使用外部存储之前，你必须要使用<code>getExternalStorageState()</code>方法，先检查外部存储的当前状态，以判断是否可用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">/* Checks if external storage is available for read and write */</div><div class="line">public boolean isExternalStorageWritable() &#123;</div><div class="line">    String state = Environment.getExternalStorageState();</div><div class="line">    if (Environment.MEDIA_MOUNTED.equals(state)) &#123;</div><div class="line">        return true;</div><div class="line">    &#125;</div><div class="line">    return false;</div><div class="line">&#125;</div><div class="line">/* Checks if external storage is available to at least read */</div><div class="line">public boolean isExternalStorageReadable() &#123;</div><div class="line">    String state = Environment.getExternalStorageState();</div><div class="line">    if (Environment.MEDIA_MOUNTED.equals(state) ||</div><div class="line">        Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) &#123;</div><div class="line">        return true;</div><div class="line">    &#125;</div><div class="line">    return false;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="3-4-外部存储写入文件"><a href="#3-4-外部存储写入文件" class="headerlink" title="3.4 外部存储写入文件"></a>3.4 外部存储写入文件</h3><p>获取了权限，检查了状态之后，终于可以写入了，而又有两种类型的文件：</p>
+<ul>
+<li>外部存储共有文件</li>
+<li>外部存储私有文件</li>
+</ul>
+<h4 id="3-4-1-外部存储共有文件"><a href="#3-4-1-外部存储共有文件" class="headerlink" title="3.4.1 外部存储共有文件"></a>3.4.1 外部存储共有文件</h4><blockquote>
+<p>Saving files that can be shared with other apps</p>
+</blockquote>
+<p>公共文件Public files：文件是可以被自由访问，<strong>目录任意</strong>，且文件的数据对其他应用或者用户来说都是由意义的，当应用被卸载之后，其卸载前创建的文件<strong>仍然保留</strong>。比如camera应用，生成的照片大家都能访问，而且camera不在了，照片仍然在。<br>举个栗子，下面的方法在公共的图片目录下创建了一个新的图片相册目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public File getAlbumStorageDir(String albumName) &#123;</div><div class="line">    // Get the directory for the user&apos;s public pictures directory.</div><div class="line">    File file = new File(Environment.getExternalStoragePublicDirectory(</div><div class="line">            Environment.DIRECTORY_PICTURES), albumName);</div><div class="line">    if (!file.mkdirs()) &#123;</div><div class="line">        Log.e(LOG_TAG, &quot;Directory not created&quot;);</div><div class="line">    &#125;</div><div class="line">    return file;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>注意，如果你的api 版本低于8，那么不能使用<code>getExternalStoragePublicDirectory()</code>，而是使用<code>Environment.getExternalStorageDirectory()</code>,他不带参数，也就不能自己创建一个目录，只是返回外部存储的根路径。</p>
+<hr>
+<p><strong><em>躲避媒体扫描</em></strong><br>在你的外部目录下放一个名为<code>.nomedia</code>的空文件，则会阻止媒体扫描器通过<code>MediaStore</code> content provider来读取你的媒体文件（比如相册中就不会显示）。但是更好的办法是用下面👇的外部存储私人模式。</p>
+<h3 id="3-4-2-外部存储私有文件"><a href="#3-4-2-外部存储私有文件" class="headerlink" title="3.4.2 外部存储私有文件"></a>3.4.2 外部存储私有文件</h3><blockquote>
+<p>If you are handling files that are not intended for other apps to use (such as graphic textures or sound effects used by only your app), you should use a private storage directory on the external storage by calling <code>getExternalFilesDir()</code>.</p>
+</blockquote>
+<p> 其实由于是外部存储的原因即是是这种类型的文件也能被其他程序访问，只不过一个应用私有的文件对其他应用其实是没有访问价值的（恶意程序除外）。外部存储上，应用私有文件的价值在于卸载之后，这些文件<strong>也会被删除</strong>。类似于内部存储。<br> 所有应用程序的外部存储的私有文件都放在根目录的<code>Android/data/</code>下，目录形式为<code>/Android/data/&lt;package_name&gt;/</code>。  </p>
+<p> Android 4.3及其以下使用<code>getExternalFilesDir()</code>方法可能只会读取手机内部空间，而非SD卡。<br> 使用<code>ContextCompat.getExternalFilesDirs()</code>，或者4.4版本以上使用<code>getExternalFilesDirs()</code>会返回一个File数组，第一个是默认的外部存储。</p>
+<p>创建应用私有文件的方法是<code>Context.getExternalFilesDir()</code>，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">public File getAlbumStorageDir(Context context, String albumName) &#123;</div><div class="line">// Get the directory for the app&apos;s private pictures directory.</div><div class="line">File file = newFile(context.getExternalFilesDir(</div><div class="line">Environment.DIRECTORY_PICTURES), albumName);</div><div class="line">if(!file.mkdirs()) &#123;</div><div class="line">Log.e(LOG_TAG, &quot;Directory not created&quot;);</div><div class="line">&#125;</div><div class="line">returnfile;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上面的代码创建了一个picture目录，并在这个目录下创建了一个名为albumName的文件，<code>Environment.DIRECTORY_PICTURES</code>其实就是字符串picture。</p>
+<p>如果你的api 版本低于8，那么不能使用<code>getExternalFilesDir()</code>，而是使用<code>Environment.getExternalStorageDirectory()</code>获得根路径之后，自己再想办法操作<code>/Android/data/&lt;package_name&gt;/</code>下的文件。</p>
+<hr>
+<p> <strong>注意，媒体扫描器也不能通过<code>MediaStore</code> content provider扫描内部存储私有文件，所以你不应在这里存储照片、音乐。但是别的应用可以读取到他们。</strong></p>
+<h3 id="3-5-外部存储缓存"><a href="#3-5-外部存储缓存" class="headerlink" title="3.5 外部存储缓存"></a>3.5 外部存储缓存</h3><blockquote>
+<p>To open a File that represents the external storage directory where you should save cache files, call <code>getExternalCacheDir()</code>. If the user uninstalls your application, these files will be automatically deleted.</p>
+</blockquote>
+<p>调用context的<code>getExternalCacheDir()</code>方法获取外部存储的私有缓存文件夹。</p>
+<h2 id="四、各种目录打印"><a href="#四、各种目录打印" class="headerlink" title="四、各种目录打印"></a>四、各种目录打印</h2><p>最后为了弄清楚<code>getFilesDir</code>，<code>getExternalFilesDir</code>，<code>getExternalStorageDirectory</code>，<code>getExternalStoragePublicDirectory</code>等android文件操作方法，我将这些方法的执行结果打印出来，看看到底路径是啥样，在activity中执行以下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Log.i(&quot;codecraeer&quot;, &quot;getFilesDir = &quot; + getFilesDir());</div><div class="line">Log.i(&quot;codecraeer&quot;, &quot;getExternalFilesDir = &quot; + getExternalFilesDir(&quot;exter_test&quot;).getAbsolutePath());</div><div class="line">Log.i(&quot;codecraeer&quot;, &quot;getDownloadCacheDirectory = &quot; + Environment.getDownloadCacheDirectory().getAbsolutePath());</div><div class="line">Log.i(&quot;codecraeer&quot;, &quot;getDataDirectory = &quot; + Environment.getDataDirectory().getAbsolutePath());</div><div class="line">Log.i(&quot;codecraeer&quot;, &quot;getExternalStorageDirectory = &quot; + Environment.getExternalStorageDirectory().getAbsolutePath());</div><div class="line">Log.i(&quot;codecraeer&quot;, &quot;getExternalStoragePublicDirectory = &quot; + Environment.getExternalStoragePublicDirectory(&quot;pub_test&quot;));</div></pre></td></tr></table></figure>
+<p>在log中看到如下结果：<br><img src="http://www.jcodecraeer.com/uploads/20130923/13799270389415.jpg" alt="image2.jpg"></p>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>一张图总结，我个人的理解是存储按照不同的角度分为两种：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3251332-65d6a32fac167dc9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<ul>
+<li>按照内外部：内部存储，外部存储<ul>
+<li>区别：带External字眼则一定是外部存储的方法，如<code>getExternalFilesDir()</code>，外部存储需要运行时权限</li>
+</ul>
+</li>
+<li>按照共有私有性质：公共文件，私有文件<ul>
+<li>区别：公共文件是Environment调用函数，而私有文件（包括内部私有与外部私有）是Context调用函数，公共文件不会随着app卸载而删除，私有则会。私有文件不会被Media Scanner扫描到。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>引用</p>
+<p><a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2013/0923/1557.html" target="_blank" rel="external">android中的文件操作详解以及内部存储和外部存储</a></p>
+<p><a href="http://developer.android.com/training/basics/data-storage/files.html#InternalVsExternalStorage" target="_blank" rel="external">http://developer.android.com/training/basics/data-storage/files.html#InternalVsExternalStorage</a></p>
+<p><a href="http://developer.android.com/guide/topics/data/data-storage.html" target="_blank" rel="external">http://developer.android.com/guide/topics/data/data-storage.html</a></p>
+<p><a href="https://developer.android.com/about/versions/marshmallow/android-6.0.html" target="_blank" rel="external">https://developer.android.com/about/versions/marshmallow/android-6.0.html</a></p>
+</blockquote>
+
+
+    
+    
+    
+
+  </section>
+</article>
+  
+    <article class="post ">
+
+  
+  <h2 class="title">
     <a href="/2017/06/01/Android_ShapeDrawable/">
-      Android之ShapeDrawable详解
+      Android罐头————ShapeDrawable详解
     </a>
   </h2>
   
@@ -102,7 +273,10 @@
     Jun 1, 2017
   </time>
   <section class="content">
-	  <p><img src="http://upload-images.jianshu.io/upload_images/3251332-0366a09bed3c33bf.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="59600727_p0.jpg"></p>
+	  <blockquote>
+<p>本文对<code>shape</code>这种<code>drawable</code>详细解析，从而可以简单地实现渐变，圆角矩形等等效果的背景。最后有示例。</p>
+</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/3251332-a916aa59f030df50.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
 <p>Drawable种类繁多，<code>ShapeDrawable</code> 是一种很常见的Drawable,可以理解为<strong>通过颜色来构造的图形，它既可以是纯色的图形，也可以是具有渐变效果的图形。</strong>  </p>
 
     
@@ -160,7 +334,8 @@
 	  <blockquote>
 <p>本文意图是针对面试，理清内部流程关系，而非细抠代码，汇总他人的文字而来。</p>
 </blockquote>
-<h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h1><p>okhttp3总体流程图：<br><img src="https://blog.piasy.com/img/201607/okhttp_full_process.png" alt="liucheng"><br>先来回顾一下代码的使用流程，然后跟着流程一步步来分析：<br>
+<p><img src="http://upload-images.jianshu.io/upload_images/3251332-6efd0060d5a73327.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h1><p>okhttp3总体流程图：<br>
 
     
 	  <div class="readmore">

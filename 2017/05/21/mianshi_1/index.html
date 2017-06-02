@@ -10,22 +10,23 @@
   <meta name="HandheldFriendly" content="True" />
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="本文意图是针对面试，理清内部流程关系，而非细抠代码，汇总他人的文字而来。  1.概述okhttp3总体流程图：先来回顾一下代码的使用流程，然后跟着流程一步步来分析：">
+  <meta name="description" content="本文意图是针对面试，理清内部流程关系，而非细抠代码，汇总他人的文字而来。   1.概述okhttp3总体流程图：">
 <meta property="og:type" content="article">
 <meta property="og:title" content="面试罐头(一)-——-okhttp内部总结分析">
 <meta property="og:url" content="http://www.youyuge.cn/2017/05/21/mianshi_1/index.html">
 <meta property="og:site_name" content="尤鱼哥">
-<meta property="og:description" content="本文意图是针对面试，理清内部流程关系，而非细抠代码，汇总他人的文字而来。  1.概述okhttp3总体流程图：先来回顾一下代码的使用流程，然后跟着流程一步步来分析：">
+<meta property="og:description" content="本文意图是针对面试，理清内部流程关系，而非细抠代码，汇总他人的文字而来。   1.概述okhttp3总体流程图：">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3251332-6efd0060d5a73327.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://blog.piasy.com/img/201607/okhttp_full_process.png">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/98641-ecaef9a96f164e00.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/98641-b1d546fc300315a7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="https://raw.githubusercontent.com/wiki/square/okhttp/interceptors@2x.png">
 <meta property="og:image" content="https://blog.piasy.com/img/201607/okhttp_interceptors.png">
-<meta property="og:updated_time" content="2017-05-21T12:31:18.000Z">
+<meta property="og:updated_time" content="2017-06-02T11:22:21.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="面试罐头(一)-——-okhttp内部总结分析">
-<meta name="twitter:description" content="本文意图是针对面试，理清内部流程关系，而非细抠代码，汇总他人的文字而来。  1.概述okhttp3总体流程图：先来回顾一下代码的使用流程，然后跟着流程一步步来分析：">
-<meta name="twitter:image" content="https://blog.piasy.com/img/201607/okhttp_full_process.png">
+<meta name="twitter:description" content="本文意图是针对面试，理清内部流程关系，而非细抠代码，汇总他人的文字而来。   1.概述okhttp3总体流程图：">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3251332-6efd0060d5a73327.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
   
     <link rel="icon" href="/favicon.png">
@@ -102,7 +103,8 @@
     	<blockquote>
 <p>本文意图是针对面试，理清内部流程关系，而非细抠代码，汇总他人的文字而来。</p>
 </blockquote>
-<h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h1><p>okhttp3总体流程图：<br><img src="https://blog.piasy.com/img/201607/okhttp_full_process.png" alt="liucheng"><br>先来回顾一下代码的使用流程，然后跟着流程一步步来分析：<br><a id="more"></a></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3251332-6efd0060d5a73327.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<h1 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h1><p>okhttp3总体流程图：<br><a id="more"></a><br><img src="https://blog.piasy.com/img/201607/okhttp_full_process.png" alt="liucheng"><br>先来回顾一下代码的使用流程，然后跟着流程一步步来分析：</p>
 <h2 id="1-1-创建-OkHttpClient-对象"><a href="#1-1-创建-OkHttpClient-对象" class="headerlink" title="1.1 创建 OkHttpClient 对象"></a>1.1 创建 <code>OkHttpClient</code> 对象</h2><pre><code>OkHttpClient client = new OkHttpClient();
 </code></pre><p>其实<code>okHttpClient</code>用的也是<code>builder</code>构建者模式：</p>
 <pre><code>public OkHttpClient() {

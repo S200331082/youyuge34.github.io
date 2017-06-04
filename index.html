@@ -135,11 +135,11 @@
 </blockquote>
 <p>自定义Dialog，要先明确Dialog的地位。 </p>
 <ul>
-<li>View是android中视图的呈现方式，但是View不能单独存在，必须依附在Window窗口这个抽象概念上，而Android中提供视图的地方有Activity，Dialog，Toast。</li>
-<li>所以某种程度上来说，Dialog是和活动平起平坐的，Dialog的Window创建过程与Activity类似（几乎没区别），所以Dialog也有setContentView方法。具体的创建过程可以参考《Android开发艺术探索》这本书。</li>
+<li><code>View</code>是android中视图的呈现方式，但是View不能单独存在，必须依附在<code>Window</code>窗口这个抽象概念上，而Android中提供视图的地方有Activity，Dialog，Toast。</li>
+<li>所以某种程度上来说，Dialog是和活动平起平坐的，Dialog的<code>Window</code>创建过程与Activity类似（几乎没区别），所以Dialog也有<code>setContentView</code>方法。具体的创建过程可以参考《Android开发艺术探索》这本书。</li>
 </ul>
-<p>所以我们在后面想要管理Dialog的对话框大小就必须使用WindowManager类，而不是去设置父布局的params。</p>
-<h3 id="3-2-建立dialog布局文件"><a href="#3-2-建立dialog布局文件" class="headerlink" title="3.2 建立dialog布局文件"></a>3.2 建立dialog布局文件</h3><p>直接上代码了，注意，我直接在布局最外层设定了固定的大小，且使用了一个圆角半透明矩形shape作为背景。</p>
+<p>所以我们在后面想要管理Dialog的对话框大小就必须使用<code>WindowManager</code>类，而不是去设置父布局的<code>params</code>。</p>
+<h3 id="3-2-建立dialog布局文件"><a href="#3-2-建立dialog布局文件" class="headerlink" title="3.2 建立dialog布局文件"></a>3.2 建立dialog布局文件</h3><p>直接上代码了，注意，我直接在布局最外层设定了固定的大小，且使用了一个圆角半透明矩形<code>shape</code>作为背景。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line">&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    android:layout_width=&quot;120dp&quot;</div><div class="line">    android:layout_height=&quot;120dp&quot;</div><div class="line">    android:layout_gravity=&quot;center_horizontal&quot;</div><div class="line">    android:background=&quot;@drawable/shape_dialog_bg&quot;</div><div class="line">    android:layout_centerInParent=&quot;true&quot;</div><div class="line">    android:orientation=&quot;vertical&quot;&gt;</div><div class="line"></div><div class="line">    &lt;RelativeLayout</div><div class="line">        android:layout_width=&quot;match_parent&quot;</div><div class="line">        android:layout_height=&quot;wrap_content&quot;</div><div class="line">        android:layout_marginTop=&quot;10dp&quot;&gt;</div><div class="line"></div><div class="line">        &lt;ImageView</div><div class="line">            android:id=&quot;@+id/loading_view&quot;</div><div class="line">            android:layout_width=&quot;85dp&quot;</div><div class="line">            android:layout_height=&quot;85dp&quot;</div><div class="line">            android:scaleType=&quot;fitCenter&quot;</div><div class="line">            android:layout_centerInParent=&quot;true&quot;</div><div class="line">            android:src=&quot;@drawable/loading_data_anim&quot;</div><div class="line">            /&gt;</div><div class="line"></div><div class="line">    &lt;/RelativeLayout&gt;</div><div class="line"></div><div class="line">    &lt;TextView</div><div class="line">        android:id=&quot;@+id/tv_load_dialog&quot;</div><div class="line">        android:layout_width=&quot;wrap_content&quot;</div><div class="line">        android:layout_height=&quot;wrap_content&quot;</div><div class="line">        android:layout_gravity=&quot;center_horizontal&quot;</div><div class="line">        android:text=&quot;读取中……&quot;</div><div class="line">        android:layout_marginTop=&quot;5dp&quot;</div><div class="line">        android:textColor=&quot;@color/color_666666&quot;</div><div class="line">        android:textSize=&quot;12sp&quot;/&gt;</div><div class="line"></div><div class="line">&lt;/LinearLayout&gt;</div></pre></td></tr></table></figure>
 <p>效果图：</p>
 <p><img src="http://upload-images.jianshu.io/upload_images/3251332-b44183397d751da8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
@@ -208,7 +208,7 @@
   
   <h2 class="title">
     <a href="/2017/06/01/Android_ShapeDrawable/">
-      Android罐头————ShapeDrawable详解
+      Android开罐头————ShapeDrawable详解
     </a>
   </h2>
   

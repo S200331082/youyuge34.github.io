@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <title>Android开罐头———初识VectorDrawable | 尤鱼哥</title>
+  <meta name="description" content="A minimal hexo theme." />
+  <meta name="keywords" content="hexo,theme,typescript,otakism,otaku" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="什么是矢量动画？我们为何要使用它？如何生成？和SVG有什么区别?   一、矢量图SVG和VectorDrawable1.1 SVG和Vector差异">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android开罐头———初识VectorDrawable">
+<meta property="og:url" content="http://www.youyuge.cn/2017/06/09/vectordrawable-1/index.html">
+<meta property="og:site_name" content="尤鱼哥">
+<meta property="og:description" content="什么是矢量动画？我们为何要使用它？如何生成？和SVG有什么区别?   一、矢量图SVG和VectorDrawable1.1 SVG和Vector差异">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3251332-c2a5abd48a6f27ef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3251332-abe6bc610fb337be.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3251332-2364109ed4423166.gif?imageMogr2/auto-orient/strip">
+<meta property="og:updated_time" content="2017-06-09T13:58:33.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android开罐头———初识VectorDrawable">
+<meta name="twitter:description" content="什么是矢量动画？我们为何要使用它？如何生成？和SVG有什么区别?   一、矢量图SVG和VectorDrawable1.1 SVG和Vector差异">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3251332-c2a5abd48a6f27ef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+
+	<script src="https://use.typekit.net/eyf3hir.js"></script>
+  <script>try{Typekit.load({ async: false });}catch(e){}</script>
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+  
+
+</head>
+
+<body>
+  
+  <div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+
+  <script>setLoadingBarProgress(20)</script>
+  
+  <div id="site-wrapper">
+    
+    <header id="header">
+	<div id="header-wrapper" class="clearfix">
+		<a id="logo" href="/">
+			<img src="/images/logo.png" />
+			<span id="site-desc">
+			  Mr.鱿鱼的记忆罐头
+      </span>
+		</a>
+		<button id="site-nav-switch">
+	    <span class="icon icon-menu"></span>
+	  </button>
+	</div>
+	<aside id="site-menu">
+  	<nav>
+  		
+        <a href="/" class="nav-home nav">
+          Home
+        </a>
+      
+        <a href="/2017/05/10/my_first_post_test/" class="nav-about nav">
+          About
+        </a>
+      
+        <a href="/archives" class="nav-archives nav">
+          Archives
+        </a>
+      
+    </nav>
+	</aside>
+</header>
+    <script>setLoadingBarProgress(40);</script>
+    
+    <main id="main" role="main">
+      <article id="post-vectordrawable-1"
+  class="post article white-box article-type-post"
+  itemscope itemprop="blogPost">
+	<h2 class="title">
+  	<a href="/2017/06/09/vectordrawable-1/">
+    	Android开罐头———初识VectorDrawable
+    </a>
+  </h2>
+	<time>
+	  Jun 9, 2017
+	</time>
+	<section class="content">
+  	<div class="article-entry" itemprop="articleBody">
+    	<blockquote>
+<p>什么是矢量动画？我们为何要使用它？如何生成？和SVG有什么区别?</p>
+</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/3251332-c2a5abd48a6f27ef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<h2 id="一、矢量图SVG和VectorDrawable"><a href="#一、矢量图SVG和VectorDrawable" class="headerlink" title="一、矢量图SVG和VectorDrawable"></a>一、矢量图SVG和VectorDrawable</h2><h3 id="1-1-SVG和Vector差异"><a href="#1-1-SVG和Vector差异" class="headerlink" title="1.1 SVG和Vector差异"></a>1.1 SVG和Vector差异</h3><a id="more"></a>
+<ul>
+<li>SVG—-前端中使用，是一套有很多标签的语法规范</li>
+<li>Vector—-在Android中使用，Vector只实现了SVG语法的Path标签</li>
+</ul>
+<h3 id="1-2-Android不直接使用SVG的原因"><a href="#1-2-Android不直接使用SVG的原因" class="headerlink" title="1.2 Android不直接使用SVG的原因"></a>1.2 Android不直接使用SVG的原因</h3><p>SVG解析效率低下，Android只使用Path标签去绘制图形，语句复杂但是效率大大提升了，和canvas理由类似。同时，文件体积上，vector&lt;svg&lt;&lt;png</p>
+<h3 id="1-3-Vector语法"><a href="#1-3-Vector语法" class="headerlink" title="1.3 Vector语法"></a>1.3 Vector语法</h3><p><code>pathData</code>标签一般由字母跟数字组成，字母多为命令关键字（这里有个大小写的区别，<strong>大写的字母</strong>是基于原点坐标系的偏移量，即绝对位置；<strong>小写字母</strong>是基于当前点坐标系的偏移量，即相对位置），数字多为坐标，</p>
+<p><strong>M(x y):</strong> 没什么好说的，移动画笔到指定点，并不进行绘制，默认在(0,0)点。与Paint里面moveTo可以理解成一样的概念</p>
+<p><strong>L(l) (x y) :</strong> 画直线，与它类似的有<code>H(h)</code>跟<code>V(v)</code>。这里有一个方向的概念，<code>pathData</code>中的方向与View绘制的方向是一样的。H就是画一条横线，V就是画一条竖线，L就是画点到点之间的线</p>
+<p><strong>Z :</strong>没有参数，就是连接起点跟终点</p>
+<h2 id="二、生成矢量图VectorDrawable"><a href="#二、生成矢量图VectorDrawable" class="headerlink" title="二、生成矢量图VectorDrawable"></a>二、生成矢量图VectorDrawable</h2><h3 id="2-1-as自带"><a href="#2-1-as自带" class="headerlink" title="2.1 as自带"></a>2.1 as自带</h3><ul>
+<li>右键res，选择vector asset后选择</li>
+</ul>
+<h3 id="2-2-svg导入"><a href="#2-2-svg导入" class="headerlink" title="2.2 svg导入"></a>2.2 svg导入</h3><ul>
+<li><a href="http://editor.method.ac/" target="_blank" rel="external">网址在线制作svg</a> </li>
+<li><a href="http://www.iconfont.cn/" target="_blank" rel="external">阿里的矢量图标下载</a></li>
+</ul>
+<h3 id="2-3-自己编写"><a href="#2-3-自己编写" class="headerlink" title="2.3 自己编写"></a>2.3 自己编写</h3><p>如下,其中<code>android:viewportHeight</code>表示把宽高分成几份，这样在<code>pathData</code>中可以用份数做单位，从而下次可以直接改宽高dp，而不用改<code>pathData</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    android:width=&quot;24dp&quot;</div><div class="line">    android:height=&quot;24dp&quot;</div><div class="line">    android:viewportHeight=&quot;200&quot;</div><div class="line">    android:viewportWidth=&quot;200&quot;&gt;</div><div class="line"></div><div class="line">    &lt;path</div><div class="line">        android:fillColor=&quot;#dc33cdcd&quot;</div><div class="line">        android:pathData=&quot;M100,100 L150,100 L150,150 L100,150 Z&quot;/&gt;</div><div class="line">&lt;/vector&gt;</div></pre></td></tr></table></figure>
+<p>效果图就是一个青色的正方形：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3251332-abe6bc610fb337be.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="效果图.png"></p>
+<h2 id="三、VectorDrawable兼容性"><a href="#三、VectorDrawable兼容性" class="headerlink" title="三、VectorDrawable兼容性"></a>三、VectorDrawable兼容性</h2><h3 id="3-1-兼容性的坎坷之路"><a href="#3-1-兼容性的坎坷之路" class="headerlink" title="3.1 兼容性的坎坷之路"></a>3.1 兼容性的坎坷之路</h3><ul>
+<li><strong>Android L （5.0）</strong>是它的诞生，但是只允许API&gt;=21的设备使用，基本残废</li>
+<li><strong>Gradle Plugin 1.5 </strong>是一个里程碑，设备&gt;=21则使用vector，设备&lt;21则将vector在编译时转化为png使用，局限性很大</li>
+<li><strong>AppCompat 23.2</strong> 才是真正的春天，静态vector支持到android2.1+，动态vector支持到android3.0+，于是几乎兼容所有的设备</li>
+</ul>
+<h2 id="四、静态VectorDrawable的配置与应用"><a href="#四、静态VectorDrawable的配置与应用" class="headerlink" title="四、静态VectorDrawable的配置与应用"></a>四、静态VectorDrawable的配置与应用</h2><h3 id="4-1-gradle项目配置"><a href="#4-1-gradle项目配置" class="headerlink" title="4.1 gradle项目配置"></a>4.1 gradle项目配置</h3><ul>
+<li><p>app子项目的<code>bulid.gradle</code>下添加一句话：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">android &#123;</div><div class="line">    defaultConfig &#123;</div><div class="line">        vectorDrawables.useSupportLibrary = true</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>确保<code>AppCompat</code>兼容库版本为<strong>23.2</strong>以上</p>
+</li>
+<li><p>同时更新根目录下<code>bulid.gradle</code>中的<strong>Gradle Plugin </strong>版本，至少要升级到2.1以上，否则还是会自动转换vector为png(原因见3.1）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">classpath &apos;com.android.tools.build:gradle:2.3.1&apos;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="4-2-控件使用vectorDrawable"><a href="#4-2-控件使用vectorDrawable" class="headerlink" title="4.2 控件使用vectorDrawable"></a>4.2 控件使用vectorDrawable</h2><h3 id="4-2-1-ImageView-ImageButton"><a href="#4-2-1-ImageView-ImageButton" class="headerlink" title="4.2.1  ImageView/ImageButton"></a>4.2.1  ImageView/ImageButton</h3><p><code>ImageView</code>/<code>ImageButton</code>设置背景，直接用标签<code>app:srcCompat</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;ImageView</div><div class="line">        android:layout_width=&quot;100dp&quot;</div><div class="line">        android:layout_height=&quot;100dp&quot;</div><div class="line">        android:layout_centerHorizontal=&quot;true&quot;</div><div class="line">        app:srcCompat=&quot;@drawable/ic_camera&quot;</div><div class="line">        /&gt;</div></pre></td></tr></table></figure></p>
+<h3 id="4-2-2-Button"><a href="#4-2-2-Button" class="headerlink" title="4.2.2 Button"></a>4.2.2 Button</h3><p><code>Button</code>设置背景不能直接使用标签<code>app:srcCompat</code>，只能利用<code>selector</code>标签间接引用</p>
+<ul>
+<li><code>selector</code>文件如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;selector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;&gt;</div><div class="line"></div><div class="line">    &lt;item android:drawable=&quot;@drawable/ic_rec&quot; android:state_pressed=&quot;false&quot;/&gt;</div><div class="line">    &lt;item android:drawable=&quot;@drawable/ic_camera&quot; android:state_pressed=&quot;true&quot;/&gt;</div><div class="line"></div><div class="line">&lt;/selector&gt;</div></pre></td></tr></table></figure>
+<ul>
+<li><code>Button</code>设置背景为<code>selector</code>:<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;Button</div><div class="line">        android:layout_width=&quot;100dp&quot;</div><div class="line">        android:layout_height=&quot;100dp&quot;</div><div class="line">        android:layout_centerHorizontal=&quot;true&quot;</div><div class="line">        android:layout_below=&quot;@id/camera_imageview&quot;</div><div class="line">        android:background=&quot;@drawable/button_bg&quot;/&gt;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<ul>
+<li><strong>大坑注意</strong><br>还要在代码中加以下这句话：<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">static &#123;</div><div class="line">    AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="4-3-总结"><a href="#4-3-总结" class="headerlink" title="4.3 总结"></a>4.3 总结</h2><p>使用低版本的手机进行实验，若是显示成功则说明配置成功了。<br>最终效果图：<br><img src="http://upload-images.jianshu.io/upload_images/3251332-2364109ed4423166.gif?imageMogr2/auto-orient/strip" alt="vector.gif"></p>
+
+  	</div>
+
+	  <div class="article-tags tags">
+		  
+	  </div>
+	</section>
+</article>
+
+
+
+
+      <script>setLoadingBarProgress(60);</script>
+    </main>
+    
+    <footer id="footer" class="clearfix">
+  
+  
+	<div class="search">
+	  <form name="searchform" id="searchform" class="u-search-form">
+	    <input type="text" id="searchinput" class="u-search-input" placeholder="Looking for something?" />
+	    <button type="submit" id="u-search-btn-submit" class="u-search-btn-submit">
+	      <span class="icon icon-search"></span>
+	    </button>
+	  </form>
+	</div>
+	
+
+	<div class="social-wrapper">
+  	
+      
+        <a href="https://github.com/youyuge34" class="social github"
+          target="_blank" rel="external">
+          <span class="icon icon-github"></span>
+        </a>
+      
+        <a href="http://weibo.com/1806842090/" class="social sina-weibo"
+          target="_blank" rel="external">
+          <span class="icon icon-sina-weibo"></span>
+        </a>
+      
+    
+  </div>
+  
+  <div>Theme <span class="codename">Typescript</span> designed by <a href="http://rakugaki.me/" target="_blank">Art Chen</a>.</div>
+  <div>&copy; <a href="/">尤鱼哥</a></div>
+  
+</footer>
+
+
+    <script>setLoadingBarProgress(80);</script>
+    
+  </div>
+
+  
+
+
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script>window.jQuery || document.write('<script src="/js/jquery.min.js"><\/script>')</script>
+
+<script src="/js/jquery.fitvids.js"></script>
+<script>
+	var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+	var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+	var ALGOLIA_API_KEY = "";
+	var ALGOLIA_APP_ID = "";
+	var ALGOLIA_INDEX_NAME = "";
+  var AZURE_SERVICE_NAME = "";
+  var AZURE_INDEX_NAME = "";
+  var AZURE_QUERY_KEY = "";
+  var BAIDU_API_ID = "";
+  var SEARCH_SERVICE = "hexo";
+</script>
+<script src="/js/search.js"></script>
+<script src="/js/app.js"></script>
+
+
+  <script>setLoadingBarProgress(100);</script>
+  
+</body>
+</html>

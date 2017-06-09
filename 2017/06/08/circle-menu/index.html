@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  <title>Android开罐头———快速打造扇形卫星菜单 | 尤鱼哥</title>
+  <meta name="description" content="A minimal hexo theme." />
+  <meta name="keywords" content="hexo,theme,typescript,otakism,otaku" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="属性动画，快速打造，练手用   预览图：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android开罐头———快速打造扇形卫星菜单">
+<meta property="og:url" content="http://www.youyuge.cn/2017/06/08/circle-menu/index.html">
+<meta property="og:site_name" content="尤鱼哥">
+<meta property="og:description" content="属性动画，快速打造，练手用   预览图：">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3251332-bf1720c2296b77e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3251332-754ef12e46f6f64c.gif?imageMogr2/auto-orient/strip">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3251332-5c3b220961939289.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3251332-9629cc7631a83280.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3251332-754ef12e46f6f64c.gif?imageMogr2/auto-orient/strip">
+<meta property="og:updated_time" content="2017-06-09T12:08:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android开罐头———快速打造扇形卫星菜单">
+<meta name="twitter:description" content="属性动画，快速打造，练手用   预览图：">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3251332-bf1720c2296b77e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+
+	<script src="https://use.typekit.net/eyf3hir.js"></script>
+  <script>try{Typekit.load({ async: false });}catch(e){}</script>
+  <link rel="stylesheet" href="/style.css">
+  <script>
+    function setLoadingBarProgress(num) {
+      document.getElementById('loading-bar').style.width=num+"%";
+    }
+  </script>
+  
+
+</head>
+
+<body>
+  
+  <div id="loading-bar-wrapper">
+  <div id="loading-bar"></div>
+</div>
+
+  <script>setLoadingBarProgress(20)</script>
+  
+  <div id="site-wrapper">
+    
+    <header id="header">
+	<div id="header-wrapper" class="clearfix">
+		<a id="logo" href="/">
+			<img src="/images/logo.png" />
+			<span id="site-desc">
+			  Mr.鱿鱼的记忆罐头
+      </span>
+		</a>
+		<button id="site-nav-switch">
+	    <span class="icon icon-menu"></span>
+	  </button>
+	</div>
+	<aside id="site-menu">
+  	<nav>
+  		
+        <a href="/" class="nav-home nav">
+          Home
+        </a>
+      
+        <a href="/2017/05/10/my_first_post_test/" class="nav-about nav">
+          About
+        </a>
+      
+        <a href="/archives" class="nav-archives nav">
+          Archives
+        </a>
+      
+    </nav>
+	</aside>
+</header>
+    <script>setLoadingBarProgress(40);</script>
+    
+    <main id="main" role="main">
+      <article id="post-circle-menu"
+  class="post article white-box article-type-post"
+  itemscope itemprop="blogPost">
+	<h2 class="title">
+  	<a href="/2017/06/08/circle-menu/">
+    	Android开罐头———快速打造扇形卫星菜单
+    </a>
+  </h2>
+	<time>
+	  Jun 8, 2017
+	</time>
+	<section class="content">
+  	<div class="article-entry" itemprop="articleBody">
+    	<blockquote>
+<p>属性动画，快速打造，练手用</p>
+</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/3251332-bf1720c2296b77e3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>预览图：</p>
+<a id="more"></a>
+<p><img src="http://upload-images.jianshu.io/upload_images/3251332-754ef12e46f6f64c.gif?imageMogr2/auto-orient/strip" alt="menu.gif"></p>
+<h2 id="一、制作圆形图标"><a href="#一、制作圆形图标" class="headerlink" title="一、制作圆形图标"></a>一、制作圆形图标</h2><p>很方便地利用as自动生成圆形图标：</p>
+<ul>
+<li>右击<code>res</code>，选择<code>Image Asset</code>:</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/3251332-5c3b220961939289.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<ul>
+<li>选择<code>Launcher Icons</code>，然后选<code>Square</code>,其余自己调整：</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/3251332-9629cc7631a83280.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
+<p>现在，mipmap中有了相关图片~~<br>当然，普通icon加个shape也是很方便的~</p>
+<h2 id="二、布局文件"><a href="#二、布局文件" class="headerlink" title="二、布局文件"></a>二、布局文件</h2><p>很简单，新建一个布局文件，记得把加号图标放最下面，这样就能遮住别的图标，直接上代码了:</p>
+<p><code>//layout/circle_menu_layout.xml</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</div><div class="line">&lt;FrameLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;</div><div class="line">    android:layout_width=&quot;match_parent&quot;</div><div class="line">    android:layout_height=&quot;match_parent&quot;</div><div class="line">    android:layout_alignParentBottom=&quot;true&quot;</div><div class="line">    android:layout_alignParentRight=&quot;true&quot;</div><div class="line">    android:orientation=&quot;vertical&quot;&gt;</div><div class="line"></div><div class="line">    &lt;ImageView</div><div class="line">        android:id=&quot;@+id/circle_menu_button_2&quot;</div><div class="line">        android:layout_width=&quot;40dp&quot;</div><div class="line">        android:layout_height=&quot;40dp&quot;</div><div class="line">        android:layout_gravity=&quot;bottom|right&quot;</div><div class="line">        android:layout_marginBottom=&quot;15dp&quot;</div><div class="line">        android:layout_marginRight=&quot;15dp&quot;</div><div class="line">        android:src=&quot;@mipmap/ic_edit1&quot; /&gt;</div><div class="line"></div><div class="line">    &lt;ImageView</div><div class="line">        android:id=&quot;@+id/circle_menu_button_3&quot;</div><div class="line">        android:layout_width=&quot;40dp&quot;</div><div class="line">        android:layout_height=&quot;40dp&quot;</div><div class="line">        android:layout_gravity=&quot;bottom|right&quot;</div><div class="line">        android:layout_marginBottom=&quot;15dp&quot;</div><div class="line">        android:layout_marginRight=&quot;15dp&quot;</div><div class="line">        android:src=&quot;@mipmap/ic_star&quot; /&gt;</div><div class="line"></div><div class="line">    &lt;ImageView</div><div class="line">        android:id=&quot;@+id/circle_menu_button_4&quot;</div><div class="line">        android:layout_width=&quot;40dp&quot;</div><div class="line">        android:layout_height=&quot;40dp&quot;</div><div class="line">        android:layout_gravity=&quot;bottom|right&quot;</div><div class="line">        android:layout_marginBottom=&quot;15dp&quot;</div><div class="line">        android:layout_marginRight=&quot;15dp&quot;</div><div class="line">        android:src=&quot;@mipmap/ic_cloud&quot; /&gt;</div><div class="line"></div><div class="line">    &lt;ImageView</div><div class="line">        android:id=&quot;@+id/circle_menu_button_5&quot;</div><div class="line">        android:layout_width=&quot;40dp&quot;</div><div class="line">        android:layout_height=&quot;40dp&quot;</div><div class="line">        android:layout_gravity=&quot;bottom|right&quot;</div><div class="line">        android:layout_marginBottom=&quot;15dp&quot;</div><div class="line">        android:layout_marginRight=&quot;15dp&quot;</div><div class="line">        android:src=&quot;@mipmap/ic_look&quot; /&gt;</div><div class="line"></div><div class="line">    &lt;ImageView</div><div class="line">        android:id=&quot;@+id/circle_menu_button_1&quot;</div><div class="line">        android:layout_width=&quot;50dp&quot;</div><div class="line">        android:layout_height=&quot;50dp&quot;</div><div class="line">        android:layout_gravity=&quot;bottom|right&quot;</div><div class="line">        android:layout_marginBottom=&quot;12dp&quot;</div><div class="line">        android:layout_marginRight=&quot;12dp&quot;</div><div class="line">        android:src=&quot;@mipmap/ic_add&quot; /&gt;</div><div class="line"></div><div class="line">&lt;/FrameLayout&gt;</div></pre></td></tr></table></figure>
+<p>在总的布局文件中，直接include引入即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;include layout=&quot;@layout/circle_menu_layout&quot; /&gt;</div></pre></td></tr></table></figure>
+<h2 id="三、代码中使用属性动画"><a href="#三、代码中使用属性动画" class="headerlink" title="三、代码中使用属性动画"></a>三、代码中使用属性动画</h2><ul>
+<li>首先定义变量，分别是资源id数组，图片队列，用来标明开关状态的标志位</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">//扇形菜单按钮</div><div class="line">private int res[] =&#123;R.id.circle_menu_button_1,R.id.circle_menu_button_2,R.id.circle_menu_button_3,R.id.circle_menu_button_4,R.id.circle_menu_button_5&#125;;</div><div class="line">private ArrayList&lt;ImageView&gt; imageViews = new ArrayList&lt;&gt;();</div><div class="line">//菜单是否展开的flag,false表示没展开</div><div class="line">private boolean mFlag = false;</div></pre></td></tr></table></figure>
+<ul>
+<li>利用for循环初始化图标实例</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">for (int i = 0; i &lt; res.length; i++) &#123;</div><div class="line">           ImageView imageView = (ImageView) mContentView.findViewById(res[i]);</div><div class="line">           imageView.setOnClickListener(this);</div><div class="line">           imageViews.add(imageView);</div><div class="line">       &#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>在点击事件<code>onClick()</code>中，判断开关状态后，开启进入或者退出的动画方法</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">case R.id.circle_menu_button_1:</div><div class="line">                if (mFlag == false)&#123;</div><div class="line">                    showEnterAnim(100); //100为扇形半径dp值</div><div class="line">                &#125;else &#123;</div><div class="line">                    showExitAnim(100);</div><div class="line">                &#125;</div><div class="line">                break;</div><div class="line">```              </div><div class="line"></div><div class="line">- 下面来看看最重要的`showEnterAnim()`方法:</div></pre></td></tr></table></figure>
+<p>//显示扇形菜单的属性动画<br>    private void showEnterAnim(int dp) {<br>    //for循环来开始小图标的出现动画<br>        for (int i = 1; i &lt; res.length; i++) {<br>            AnimatorSet set = new AnimatorSet();<br>            double x = -Math.cos(0.5/(res.length-2)<em>(i-1)</em>Math.PI)<em> Utils.dip2px(mContext,dp);<br>            double y = -Math.sin(0.5/(res.length-2)</em>(i-1)<em>Math.PI)</em> Utils.dip2px(mContext,dp);<br>            set.playTogether(<br>                    ObjectAnimator.ofFloat(imageViews.get(i),”translationX”,(float)(x<em>0.25),(float)x),<br>                    ObjectAnimator.ofFloat(imageViews.get(i),”translationY”,(float)(y</em>0.25),(float)y)<br>                    ,ObjectAnimator.ofFloat(imageViews.get(i),”alpha”,0,1).setDuration(2000)<br>            );<br>            set.setInterpolator(new BounceInterpolator());<br>            set.setDuration(500).setStartDelay(100*i);<br>            set.start();<br>        }<br>//转动加号大图标本身45°<br>        ObjectAnimator rotate = ObjectAnimator.ofFloat(imageViews.get(0),”rotation”,0,45).setDuration(300);<br>        rotate.setInterpolator(new BounceInterpolator());<br>        rotate.start();</p>
+<pre><code>    //菜单状态置打开
+    mFlag = true;
+}        
+</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">唯一的难点就是根据第几个小图标，计算小图标的xy轴坐标了，注意三角函数`Math.sin()`的参数不是度数，而是**弧度制**的角度大小。</div><div class="line"></div><div class="line">- 退出动画其实和上面是相反的操作，参数前后换一下即可，但是考虑到是退出，所以应该时间短一点，变透明得快一点，且差值器就不用回弹效果了,可以用减速器的差值器（这样一开始可以速度快点），代码就不贴了。</div><div class="line"></div><div class="line"></div><div class="line">- 上面用到了一个工具类函数`Utils.dip2px()`转换dp参数为px值，如下：</div></pre></td></tr></table></figure>
+<p>public static int dip2px(Context context, float dpValue) {<br>        final float scale = context.getResources().getDisplayMetrics().density;<br>        return (int) (dpValue * scale);<br>    }<br>```</p>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>实现效果：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3251332-754ef12e46f6f64c.gif?imageMogr2/auto-orient/strip" alt="menu.gif"></p>
+<hr>
+<p>总的来说，属性动画可以快速方便地实现较为炫酷的效果，要自己多写几个经典的demo试试就行了。下一步可以学习更为厉害的VectorDrawable和贝塞尔曲线等等~~</p>
+
+  	</div>
+
+	  <div class="article-tags tags">
+		  
+	  </div>
+	</section>
+</article>
+
+
+
+
+      <script>setLoadingBarProgress(60);</script>
+    </main>
+    
+    <footer id="footer" class="clearfix">
+  
+  
+	<div class="search">
+	  <form name="searchform" id="searchform" class="u-search-form">
+	    <input type="text" id="searchinput" class="u-search-input" placeholder="Looking for something?" />
+	    <button type="submit" id="u-search-btn-submit" class="u-search-btn-submit">
+	      <span class="icon icon-search"></span>
+	    </button>
+	  </form>
+	</div>
+	
+
+	<div class="social-wrapper">
+  	
+      
+        <a href="https://github.com/youyuge34" class="social github"
+          target="_blank" rel="external">
+          <span class="icon icon-github"></span>
+        </a>
+      
+        <a href="http://weibo.com/1806842090/" class="social sina-weibo"
+          target="_blank" rel="external">
+          <span class="icon icon-sina-weibo"></span>
+        </a>
+      
+    
+  </div>
+  
+  <div>Theme <span class="codename">Typescript</span> designed by <a href="http://rakugaki.me/" target="_blank">Art Chen</a>.</div>
+  <div>&copy; <a href="/">尤鱼哥</a></div>
+  
+</footer>
+
+
+    <script>setLoadingBarProgress(80);</script>
+    
+  </div>
+
+  
+
+
+
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script>window.jQuery || document.write('<script src="/js/jquery.min.js"><\/script>')</script>
+
+<script src="/js/jquery.fitvids.js"></script>
+<script>
+	var GOOGLE_CUSTOM_SEARCH_API_KEY = "";
+	var GOOGLE_CUSTOM_SEARCH_ENGINE_ID = "";
+	var ALGOLIA_API_KEY = "";
+	var ALGOLIA_APP_ID = "";
+	var ALGOLIA_INDEX_NAME = "";
+  var AZURE_SERVICE_NAME = "";
+  var AZURE_INDEX_NAME = "";
+  var AZURE_QUERY_KEY = "";
+  var BAIDU_API_ID = "";
+  var SEARCH_SERVICE = "hexo";
+</script>
+<script src="/js/search.js"></script>
+<script src="/js/app.js"></script>
+
+
+  <script>setLoadingBarProgress(100);</script>
+  
+</body>
+</html>
